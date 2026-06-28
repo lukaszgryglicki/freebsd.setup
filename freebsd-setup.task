@@ -1,0 +1,14 @@
+I want to install FreeBSD 15.1 on my Tuxedo laptop. I've already confirmed everything works, excluding only suspend/resume and I'm OK with this. I want you to generate runbook for me for that installation.
+
+This machine has 64GB of RAM and 2 x 4 TB disks. I want to install root on ZFS with the following options and need to know how to do this exactly:
+
+1. ZFS pool should be mirror of those two disks (so the capacity will be 4 TB).
+2. It should use geli encryption - so there will be geli and mirror and ZFS will not be aware of encryption - it will be below.
+3. It should use compression zstd-10, I prefer heavy compression algorithm (so not less compression, not default, rather higher, research says that above 10 gives little gain and way more CPU usage so either zstd-10 or even zstd-9 if 10 already gives very little gain at very high CPU cost).
+4. Enable dedup in "sha256,verify" mode, I know it is memory heavy - I have 64GB of RAM and storage is 4T (64 times RAM).
+5. /tmp must be on tmpfs (ramdisk) and its size must be 512M.
+6. Enable flags like 4K sectors (ashift=12) and atime=off, possibly other recommended for my setup (mirror of 2 4TB disks, 64GB RAM, many small files, many possible duplicates, I have a lot of data to store - mostly programming and emulators, so also compression needed).
+7. There should be no multiple pools for /usr, /var, /home - etc. There should be only one pool / (possibly also /boot but only if it is required for freebsd on zfs to boot). Possibly also EFI partition, so mirrored: a) EFI, b) unencrypted /boot, c) encrypted ZFS and root pools from those two encrrypted zfses.
+8. No swap at all.
+9. All of this must be set before install starts, so applies to all data, if cannot be done during setup, then give me commands that I need to execute in shell prior to starting setup. I will install from USB memstick.
+10. Use packages (pkg) not distribution sets - I've used them already and they're working fine for me.
